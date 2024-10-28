@@ -1,0 +1,167 @@
+package shubham1;
+import java.util.Scanner;
+class Book {
+    String title;
+    String author;
+    boolean isLent;
+
+    Book(String title, String author) {
+        this.title = title;
+        this.author = author;
+        this.isLent = false;
+    }
+
+    void lendBook() {
+        this.isLent = true;
+    }
+
+    void returnBook() {
+        this.isLent = false;
+    }
+}
+
+class Library {
+    Book[] books;
+    int bookCount;
+    int maxSize;
+
+    Library(int size) {
+        this.books = new Book[size];
+        this.bookCount = 0;
+        this.maxSize = size;
+    }
+
+    void addBook(String title, String author) {
+        if (bookCount < maxSize) {
+            books[bookCount++] = new Book(title, author);
+            System.out.println("Book added successfully.");
+        } else {
+            System.out.println("Library is full, cannot add more books.");
+        }
+    }
+
+    void removeBook(String title) {
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].title.equalsIgnoreCase(title)) {
+                books[i] = books[--bookCount];
+                books[bookCount] = null; // Clear the reference to the removed book
+                System.out.println("Book removed successfully.");
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    void searchBook(String title) {
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].title.equalsIgnoreCase(title)) {
+                System.out.println("Book found: " + books[i].title + " by " + books[i].author +
+                                   (books[i].isLent ? " (Currently lent)" : " (Available)"));
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    void lendBook(String title) {
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].title.equalsIgnoreCase(title)) {
+                if (!books[i].isLent) {
+                    books[i].lendBook();
+                    System.out.println("Book lent successfully.");
+                } else {
+                    System.out.println("Book is already lent.");
+                }
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    void returnBook(String title) {
+        for (int i = 0; i < bookCount; i++) {
+            if (books[i].title.equalsIgnoreCase(title)) {
+                if (books[i].isLent) {
+                    books[i].returnBook();
+                    System.out.println("Book returned successfully.");
+                } else {
+                    System.out.println("Book was not lent.");
+                }
+                return;
+            }
+        }
+        System.out.println("Book not found.");
+    }
+
+    void displayBooks() {
+        if (bookCount == 0) {
+            System.out.println("No books available.");
+        } else {
+            System.out.println("Books in Library:");
+            for (int i = 0; i < bookCount; i++) {
+                System.out.println((i + 1) + ". " + books[i].title + " by " + books[i].author +
+                                   (books[i].isLent ? " (Currently lent)" : " (Available)"));
+            }
+        }
+    }
+}
+
+public class LibrarayManagementSystem {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Library library = new Library(10); // Assuming a library with a maximum of 10 books
+
+        while (true) {
+            System.out.println("\nLibrary Management System");
+            System.out.println("1. Add Book");
+            System.out.println("2. Remove Book");
+            System.out.println("3. Search Book");
+            System.out.println("4. Lend Book");
+            System.out.println("5. Return Book");
+            System.out.println("6. Display Books");
+            System.out.println("7. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("Enter book title: ");
+                    String title = scanner.nextLine();
+                    System.out.print("Enter book author: ");
+                    String author = scanner.nextLine();
+                    library.addBook(title, author);
+                    break;
+                case 2:
+                    System.out.print("Enter book title to remove: ");
+                    title = scanner.nextLine();
+                    library.removeBook(title);
+                    break;
+                case 3:
+                    System.out.print("Enter book title to search: ");
+                    title = scanner.nextLine();
+                    library.searchBook(title);
+                    break;
+                case 4:
+                    System.out.print("Enter book title to lend: ");
+                    title = scanner.nextLine();
+                    library.lendBook(title);
+                    break;
+                case 5:
+                    System.out.print("Enter book title to return: ");
+                    title = scanner.nextLine();
+                    library.returnBook(title);
+                    break;
+                case 6:
+                    library.displayBooks();
+                    break;
+                case 7:
+                    System.out.println("Exiting the system. Goodbye!");
+                    scanner.close(); // Closing the scanner properly
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+}
